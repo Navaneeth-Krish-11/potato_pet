@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meet Your Emotional Companion</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="landing-page">
+    <div class="floating-particles" id="particles"></div>
+    
+    <div class="landing-container">
+      <h1 class="hero-title">🥔 Meet Your Emotional Companion</h1>
+      <p class="hero-subtitle">
+        A sentient potato with deep feelings, memories, and personality. 
+        Experience emotional connection like never before.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature">
+          <span class="feature-icon">💭</span>
+          <div class="feature-title">Emotional Intelligence</div>
+          <div class="feature-desc">Understands and responds to your feelings with empathy</div>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🧠</span>
+          <div class="feature-title">Memory System</div>
+          <div class="feature-desc">Remembers your interactions and grows with you</div>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🌬️</span>
+          <div class="feature-title">Breathing Guide</div>
+          <div class="feature-desc">Guided breathing exercises for emotional regulation</div>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">💡</span>
+          <div class="feature-title">Smart Insights</div>
+          <div class="feature-desc">Personalized suggestions based on your mood</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-number">∞</span>
+          <span class="stat-label">Emotional Depth</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Always Available</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Judgment Free</span>
+        </div>
+      </div>
+
+      <div class="cta-section">
+        <a href="home.html" class="cta-button">
+          Begin Your Journey →
+        </a>
+      </div>
+
+      <div class="preview-section">
+        <img src="potato.jpg.jpg" alt="Your Companion" class="preview-image" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 15;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Animate stats on scroll
+    function animateStats() {
+      const stats = document.querySelectorAll('.stat-number');
+      stats.forEach(stat => {
+        const finalValue = stat.textContent;
+        if (finalValue === '∞') return;
+        
+        let currentValue = 0;
+        const increment = finalValue === '24/7' ? 1 : 5;
+        const target = finalValue === '24/7' ? 24 : 100;
+        
+        const timer = setInterval(() => {
+          currentValue += increment;
+          if (currentValue >= target) {
+            stat.textContent = finalValue;
+            clearInterval(timer);
+          } else {
+            stat.textContent = finalValue === '24/7' ? currentValue + '/7' : currentValue + '%';
+          }
+        }, 50);
+      });
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      
+      // Animate stats when page loads
+      setTimeout(animateStats, 1000);
+      
+      // Add click effect to CTA button
+      const ctaButton = document.querySelector('.cta-button');
+      ctaButton.addEventListener('click', (e) => {
+        // Create ripple effect
+        const ripple = document.createElement('span');
+        const rect = ctaButton.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(255,255,255,0.3)';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.animation = 'ripple 0.6s linear';
+        ripple.style.pointerEvents = 'none';
+        
+        ctaButton.style.position = 'relative';
+        ctaButton.style.overflow = 'hidden';
+        ctaButton.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+  </script>
+</body>
+</html>
+
+

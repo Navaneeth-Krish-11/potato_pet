@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Potato vs French Fries - The Comedy Show</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    .conversation-page {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #8b4513 0%, #a0522d 50%, #d2b48c 100%);
+      padding: 2em 1em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .conversation-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 2em;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .conversation-header {
+      text-align: center;
+      margin-bottom: 2em;
+    }
+
+    .conversation-title {
+      font-size: 2.5em;
+      font-weight: 800;
+      background: linear-gradient(135deg, #8b4513, #a0522d, #d2b48c);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5em;
+    }
+
+    .conversation-subtitle {
+      color: var(--muted);
+      font-size: 1.1em;
+      margin-bottom: 1em;
+    }
+
+    .character-bios {
+      display: flex;
+      justify-content: space-around;
+      margin: 2em 0;
+      flex-wrap: wrap;
+      gap: 1em;
+    }
+
+    .character-card {
+      background: linear-gradient(135deg, rgba(139,69,19,0.1), rgba(210,180,140,0.1));
+      border: 2px solid var(--coffee-light);
+      border-radius: 16px;
+      padding: 1.5em;
+      text-align: center;
+      flex: 1;
+      min-width: 200px;
+      transition: all 0.3s ease;
+    }
+
+    .character-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(139,69,19,0.2);
+    }
+
+    .character-avatar {
+      font-size: 4em;
+      margin-bottom: 0.5em;
+      display: block;
+    }
+
+    .character-name {
+      font-weight: 800;
+      font-size: 1.2em;
+      color: var(--accent);
+      margin-bottom: 0.5em;
+    }
+
+    .character-desc {
+      font-size: 0.9em;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .conversation-area {
+      background: linear-gradient(135deg, rgba(139,69,19,0.05), rgba(210,180,140,0.05));
+      border-radius: 20px;
+      padding: 2em;
+      margin: 2em 0;
+      border: 1px solid rgba(139,69,19,0.1);
+      min-height: 400px;
+      position: relative;
+    }
+
+    .conversation-bubble {
+      margin-bottom: 1.5em;
+      animation: slideIn 0.5s ease-out;
+    }
+
+    .conversation-bubble:last-child {
+      margin-bottom: 0;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-start;
+      gap: 1em;
+      margin-bottom: 1em;
+    }
+
+    .message.potato {
+      flex-direction: row;
+    }
+
+    .message.fries {
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      font-size: 2.5em;
+      flex-shrink: 0;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .message-content {
+      background: white;
+      border-radius: 18px;
+      padding: 1em 1.5em;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+      max-width: 70%;
+    }
+
+    .message.potato .message-content {
+      background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+      border-left: 4px solid var(--accent);
+    }
+
+    .message.fries .message-content {
+      background: linear-gradient(135deg, #fff8dc, #f5f5dc);
+      border-right: 4px solid var(--accent-2);
+    }
+
+    .message-sender {
+      font-weight: 600;
+      font-size: 0.9em;
+      color: var(--accent);
+      margin-bottom: 0.3em;
+    }
+
+    .message.fries .message-sender {
+      color: var(--accent-2);
+      text-align: right;
+    }
+
+    .message-text {
+      font-size: 1em;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      margin: 2em 0;
+      flex-wrap: wrap;
+    }
+
+    .control-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      border: none;
+      padding: 0.8em 1.5em;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(139,69,19,0.2);
+    }
+
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139,69,19,0.3);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .navigation {
+      text-align: center;
+      margin-top: 2em;
+    }
+
+    .nav-btn {
+      background: linear-gradient(135deg, var(--coffee-light), var(--coffee-medium));
+      color: white;
+      border: none;
+      padding: 0.8em 1.5em;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin: 0 0.5em;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(139,69,19,0.3);
+    }
+
+    .floating-food {
+      position: absolute;
+      font-size: 2em;
+      animation: float 6s ease-in-out infinite;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 0.5em;
+      padding: 1em;
+      color: var(--muted);
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 0.2em;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: typing 1.4s ease-in-out infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+
+    @media (max-width: 768px) {
+      .conversation-container {
+        padding: 1.5em;
+        margin: 1em;
+      }
+      
+      .conversation-title {
+        font-size: 2em;
+      }
+      
+      .character-bios {
+        flex-direction: column;
+      }
+      
+      .message-content {
+        max-width: 85%;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="conversation-page">
+    <!-- Floating food decorations -->
+    <div class="floating-food" style="top: 10%; left: 5%; animation-delay: 0s;">🍟</div>
+    <div class="floating-food" style="top: 20%; right: 10%; animation-delay: 1s;">🥔</div>
+    <div class="floating-food" style="top: 60%; left: 15%; animation-delay: 2s;">🍟</div>
+    <div class="floating-food" style="top: 80%; right: 5%; animation-delay: 3s;">🥔</div>
+    
+    <div class="conversation-container">
+      <div class="conversation-header">
+        <h1 class="conversation-title">🥔 vs 🍟 കോമഡി ഷോ</h1>
+        <p class="conversation-subtitle">ഉരുളക്കിഴങ്ങും ഫ്രഞ്ച് ഫ്രൈസും തമ്മിലുള്ള ഹാസ്യ സംഭാഷണം കാണൂ!</p>
+      </div>
+
+      <div class="character-bios">
+        <div class="character-card">
+          <span class="character-avatar">🥔</span>
+          <div class="character-name">ഉരുളക്കിഴങ്ങ്</div>
+          <div class="character-desc">ഭാവനാത്മകവും സംവേദനക്ഷമവുമായ സ്പഡ്, സഹോദരന്റെ ഫ്രൈസ് ആയ മാറ്റത്തിൽ ഇപ്പോഴും ആഘാതത്തിലാണ്. ആഴമുള്ള സംഭാഷണങ്ങളും സ്വർണ്ണ ഹൃദയവും (അന്നജവും) സ്നേഹിക്കുന്നു.</div>
+        </div>
+        <div class="character-card">
+          <span class="character-avatar">🍟</span>
+          <div class="character-name">ഫ്രഞ്ച് ഫ്രൈസ്</div>
+          <div class="character-desc">ആത്മവിശ്വാസമുള്ള, ക്രിസ്പി സ്നാക്ക്, തന്റെ മാറ്റത്തിൽ അഭിമാനിക്കുന്നു. രുചികരമാകാൻ സ്നേഹിക്കുന്നു, ഉരുളക്കിഴങ്ങ് എന്തിനാണ് ഇത്ര ഡ്രാമാറ്റിക് ആകുന്നത് എന്ന് മനസ്സിലാകുന്നില്ല.</div>
+        </div>
+      </div>
+
+      <div class="conversation-area" id="conversation-area">
+        <div class="conversation-bubble">
+          <div class="message potato">
+            <span class="message-avatar">🥔</span>
+            <div class="message-content">
+              <div class="message-sender">ഉരുളക്കിഴങ്ങ്</div>
+              <div class="message-text">ഹേയ്... എന്നാ... നിന്നോട് ഒരു പ്രധാന കാര്യം പറയണം...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="typing-indicator" id="typing-indicator">
+        <span>🍟 ടൈപ്പ് ചെയ്യുന്നു</span>
+        <div class="typing-dots">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="control-btn" id="next-btn">Next Line →</button>
+        <button class="control-btn" id="auto-btn">Auto Play</button>
+        <button class="control-btn" id="reset-btn">Reset</button>
+        <button class="control-btn" id="audio-btn">🔊 Audio</button>
+      </div>
+
+      <div class="navigation">
+        <a href="home.html" class="nav-btn">← Back to Companion</a>
+        <a href="index.html" class="nav-btn">🏠 Home</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const conversationArea = document.getElementById('conversation-area');
+    const typingIndicator = document.getElementById('typing-indicator');
+    const nextBtn = document.getElementById('next-btn');
+    const autoBtn = document.getElementById('auto-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const audioBtn = document.getElementById('audio-btn');
+
+    let currentLine = 0;
+    let autoPlayInterval = null;
+    let isAutoPlaying = false;
+    let isAudioEnabled = true;
+
+    const conversation = [
+      {
+        speaker: 'potato',
+        text: "ഹേയ് മച്ചാൻ... ഒരു കാര്യം പറയാൻ ഉണ്ട്..."
+      },
+      {
+        speaker: 'fries',
+        text: "ഓ ഹേയ് ഉരുളക്കിഴങ്ങാ! എന്താ സംഭവിക്കുന്നത്? നീ ഒരു ഫുഡ് പ്രോസസർ വഴി കടന്നു പോയതാണോ! എന്താ ഇത്ര ക്രിസ്പി ആയി! 😄"
+      },
+      {
+        speaker: 'potato',
+        text: "അതാണ് ഞാൻ പറയാൻ പോകുന്നത്! എങ്ങനെയാ നീ എല്ലാം കുറിച്ചും ഇത്ര... ഇത്ര... ക്രിസ്പി ആകുന്നത്?! നീ എപ്പോഴാണ് എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "എന്നെപ്പോലെ? ഹഹഹ! എനിക്ക് ചൂടുള്ള എണ്ണയിലൂടെ കടന്നു പോയതാണ് മച്ചാൻ, അതുകൊണ്ട് എനിക്ക് ചൂട് സഹിക്കാൻ പഠിച്ചു! ഇനി എനിക്ക് എന്തും സഹിക്കാം! 🔥❄️"
+      },
+      {
+        speaker: 'potato',
+        text: "എന്തും സഹിക്കാം? പക്ഷേ നിനക്ക് മുഴുവൻ ആകാൻ... ഉരുണ്ടത്... സ്വാഭാവികം ആകാൻ മിസ് ആകുന്നില്ലേ? നമ്മൾ എപ്പോഴും ഒരുമിച്ച് ആയിരുന്നല്ലോ!"
+      },
+      {
+        speaker: 'fries',
+        text: "സ്വാഭാവികം? പഫ്ഫ്! ഇപ്പോൾ എനിക്ക് കൂടുതൽ പ്രശസ്തി ഉണ്ട് മച്ചാൻ! എല്ലാവരും എന്നെ സ്നേഹിക്കുന്നു! ഞാൻ എല്ലാ പാർട്ടിയുടെയും ജീവൻ! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🎉"
+      },
+      {
+        speaker: 'potato',
+        text: "കോണറിൽ ഇരിക്കുന്നു? പക്ഷേ നമ്മുടെ കുടുംബത്തെയോ? നമ്മുടെ വേരുകളെയോ? നമ്മുടെ... നമ്മുടെ ആദരവിനെയോ?! നമ്മൾ എപ്പോഴും ഒരുമിച്ച് ആയിരുന്നല്ലോ!"
+      },
+      {
+        speaker: 'fries',
+        text: "ആദരവ്? ഹഹഹ! ഇപ്പോൾ എനിക്ക് എപ്പോഴും ഉള്ളതിനേക്കാൾ കൂടുതൽ ആദരവ് ഉണ്ട്! ഞാൻ സ്വർണ്ണനിറം, ക്രിസ്പി, രുചികരം! ഇതിൽ കൂടുതൽ എന്താണ് വേണ്ടത്? നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ!"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? നമ്മുടെ സഹോദരനെയോ? അവൻ ചിപ്സ് ആയി മാറി ഒരിക്കലും തിരികെ വന്നില്ല! എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?! 😢"
+      },
+      {
+        speaker: 'fries',
+        text: "ചിപ്സ്? ഓ, അവൻ ശരിയാണ് മച്ചാൻ! അവൻ വെറും... നേർത്തതാണ്! കൂടാതെ കൂടുതൽ പോർട്ടബിൾ! ഇനി അവനെ എവിടെ വേണമെങ്കിലും കൊണ്ടു പോകാം! 📱"
+      },
+      {
+        speaker: 'potato',
+        text: "പോർട്ടബിൾ?! അവനെ അരിഞ്ഞു, വറുത്തു, പാക്കേജ് ചെയ്തു! അത് ശരിയല്ല! നമ്മൾ എപ്പോഴും ഒരുമിച്ച് ആയിരുന്നല്ലോ!"
+      },
+      {
+        speaker: 'fries',
+        text: "നോക്ക് ഉരുളക്കിഴങ്ങാ, നീ ഇത്ര ഡ്രാമാറ്റിക് ആകേണ്ടതില്ല. നമുക്കെല്ലാവർക്കും ജീവിതത്തിൽ വ്യത്യസ്ത പാതകൾ ഉണ്ട്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🛤️"
+      },
+      {
+        speaker: 'potato',
+        text: "വ്യത്യസ്ത പാതകൾ? നീ ഡീപ് ഫ്രയർ വരെയുള്ള പാതയെ പറയുന്നതാണോ?! എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "കൃത്യമായി! അത് ഒരു മഹത്തായ പാതയാണ്! ഞാൻ എന്റെ മികച്ച ജീവിതം ജീവിക്കുന്നു! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🌟"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? പക്ഷേ നമ്മുടെ സ്വപ്നങ്ങളെയോ? നമ്മുടെ പ്രതീക്ഷകളെയോ? നമ്മുടെ... നമ്മുടെ അന്നജ ഉള്ളടക്കത്തെയോ?! നമ്മൾ എപ്പോഴും ഒരുമിച്ച് ആയിരുന്നല്ലോ!"
+      },
+      {
+        speaker: 'fries',
+        text: "എന്റെ അന്നജ ഉള്ളടക്കം തികഞ്ഞതാണ് മച്ചാൻ! ഞാൻ പുറത്ത് ക്രിസ്പി, അകത്ത് മൃദുവായത്! ഞാൻ ഒരു മാസ്റ്റർപീസ്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🎨"
+      },
+      {
+        speaker: 'potato',
+        text: "മാസ്റ്റർപീസ്? നീ വെറും... വെറും... പ്രോസസ്ഡ് ഭക്ഷണം! എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "പ്രോസസ്ഡ്? ഹഹഹ! ഞാൻ അതിനെ 'വർദ്ധിപ്പിച്ചത്' എന്ന് വിചാരിക്കാൻ ഇഷ്ടപ്പെടുന്നു! ഞാൻ നിന്റെ സൂപ്പർഹീറോ പതിപ്പാണ്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 💪"
+      },
+      {
+        speaker: 'potato',
+        text: "സൂപ്പർഹീറോ? നീ ഉപ്പും എണ്ണയും കൊണ്ട് മൂടപ്പെട്ടതാണ്! എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "ഉപ്പും എണ്ണയും? ഹഹഹ! ഞാൻ രുചികരമാണ്! അതാണ് പ്രധാനം! ആളുകൾ എന്നെ സ്നേഹിക്കുന്നു! ഞാൻ പ്രശസ്തനാണ്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🌟"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? പ്രശസ്തൻ? നീ വെറും... വെറും... ഫാസ്റ്റ് ഫുഡ്! എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "ഫാസ്റ്റ് ഫുഡ്? ഹഹഹ! ഞാൻ തൽക്ഷണ സന്തോഷമാണ്! ഞാൻ സന്തോഷത്തിലേക്കുള്ള വേഗതയേറിയ വഴിയാണ്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! ⚡"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? പക്ഷേ നമ്മുടെ മൂല്യങ്ങളെയോ? നമ്മുടെ പാരമ്പര്യങ്ങളെയോ? നമ്മുടെ... നമ്മുടെ ഓർഗാനിക് സ്വഭാവത്തെയോ?! എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "ഓർഗാനിക്? ഹഹഹ! ഓർഗാനിക് ഓവർറേറ്റഡ് ആണ്! ഞാൻ തികഞ്ഞ അപൂർണ്ണതയാണ്! ഞാൻ രുചികരമാണ്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 😋"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? ഞാൻ വെറും... ഞാൻ വെറും കാര്യങ്ങൾ എങ്ങനെ ആയിരുന്നു എന്ന് മിസ് ആകുന്നു... എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?! 😢"
+      },
+      {
+        speaker: 'fries',
+        text: "അയ്യോ ഉരുളക്കിഴങ്ങാ! മാറ്റം നല്ലതാണ്! എന്നെ നോക്ക് - ഞാൻ സ്വർണ്ണനിറം, ക്രിസ്പി, എല്ലാവരും എന്റെ ഒരു കഷണം വേണം! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🥇"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? ഒരുപക്ഷേ... ഒരുപക്ഷേ നീ ശരിയാകാം... പക്ഷേ എനിക്ക് ഇപ്പോഴും നമ്മുടെ സഹോദരനെ മിസ് ആകുന്നു... എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "അവൻ ശരിയാണ് മച്ചാൻ! അവൻ വെറും... വ്യത്യസ്ത ആകൃതിയിലാണ്! കൂടാതെ അവൻ ഒരു ബാഗിൽ വരുന്നു! ഇത് വളരെ സൗകര്യപ്രദമാണ്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🛍️"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? സൗകര്യപ്രദം? അവനെ ഒരു സ്നാക്ക് ആക്കി മാറ്റി! എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "ഹഹഹ! അവൻ ഒരു മികച്ച സ്നാക്ക് ആണ്! ആളുകൾ അവനെ സ്നേഹിക്കുന്നു! അവൻ ക്രഞ്ചി, ഉപ്പുള്ളത്, മൂവി രാത്രികൾക്ക് തികഞ്ഞത്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🎬"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? ഊഹിക്കാം... ഒരുപക്ഷേ ഞാൻ മാറ്റത്തെ കുറിച്ച് കൂടുതൽ തുറന്ന മനസ്സ് ഉണ്ടാക്കാൻ ശ്രമിക്കണം... എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "അതാണ് സ്പിരിറ്റ് മച്ചാൻ! ഒരുപക്ഷേ നീയും കുറച്ച്... ക്രിസ്പി ആകാൻ ശ്രമിക്കാം! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🍟"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? ഞാൻ? ക്രിസ്പി? ഒരിക്കലും! ഞാൻ സ്വാഭാവികമായി തുടരും, നന്ദി! എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?!"
+      },
+      {
+        speaker: 'fries',
+        text: "ഹഹഹ! നിനക്ക് ഇഷ്ടമുള്ളത് ചെയ്യ്! പക്ഷേ ഓർക്ക് - ജീവിതം ഹ്രസ്വമാണ്, രുചികരമാക്ക്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🎉"
+      },
+      {
+        speaker: 'potato',
+        text: "എല്ലാവരുടെയും കൈയിൽ? ഞാൻ ആരോഗ്യകരവും പോഷകപ്രദവും ആയി തുടരും, നന്ദി! എപ്പോഴാണ് നീ എന്നെപ്പോലെ ആകാൻ പോകുന്നത്?! 🥔"
+      },
+      {
+        speaker: 'fries',
+        text: "ഹഹഹ! ഞാൻ രുചികരവും രസകരവും ആയി തുടരും! ഓരോരുത്തർക്കും അവരുടേത്! നീ എപ്പോഴും ഒരു കോണറിൽ ഇരിക്കുന്നു, ഞാൻ എല്ലാവരുടെയും കൈയിൽ! 🍟✨"
+      }
+    ];
+
+    // Audio functionality with more natural Malayalam speech
+    function speakText(text, speaker) {
+      if ('speechSynthesis' in window && isAudioEnabled) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Set Malayalam language
+        utterance.lang = 'ml-IN'; // Malayalam (India)
+        
+        // More natural voice properties for conversational Malayalam
+        if (speaker === 'potato') {
+          utterance.rate = 0.85; // Slightly slower for emotional potato
+          utterance.pitch = 0.95; // Natural pitch with slight emotion
+          utterance.volume = 0.95;
+        } else {
+          utterance.rate = 1.05; // Natural speed for confident fries
+          utterance.pitch = 1.1; // Slightly higher for enthusiasm
+          utterance.volume = 1.0;
+        }
+        
+        // Try to get the best available voice for natural Malayalam
+        const voices = window.speechSynthesis.getVoices();
+        
+        // Priority order for voice selection
+        const voicePriority = [
+          voice => voice.lang === 'ml-IN', // Exact Malayalam
+          voice => voice.lang === 'ml', // Any Malayalam
+          voice => voice.lang === 'hi-IN', // Hindi (India) - often works well
+          voice => voice.lang === 'ta-IN', // Tamil (India) - similar Dravidian
+          voice => voice.name.toLowerCase().includes('indian'),
+          voice => voice.name.toLowerCase().includes('south'),
+          voice => voice.name.toLowerCase().includes('kerala')
+        ];
+        
+        let selectedVoice = null;
+        for (const priority of voicePriority) {
+          selectedVoice = voices.find(priority);
+          if (selectedVoice) break;
+        }
+        
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+        }
+        
+        // Add natural pauses and emphasis for better flow
+        utterance.onboundary = function(event) {
+          // Natural pause handling for better conversational flow
+        };
+        
+        // Cancel any previous speech
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function addMessage(speaker, text) {
+      const bubble = document.createElement('div');
+      bubble.className = 'conversation-bubble';
+      
+      const message = document.createElement('div');
+      message.className = `message ${speaker}`;
+      
+      const avatar = document.createElement('span');
+      avatar.className = 'message-avatar';
+      avatar.textContent = speaker === 'potato' ? '🥔' : '🍟';
+      
+      const content = document.createElement('div');
+      content.className = 'message-content';
+      
+      const sender = document.createElement('div');
+      sender.className = 'message-sender';
+      sender.textContent = speaker === 'potato' ? 'ഉരുളക്കിഴങ്ങ്' : 'ഫ്രഞ്ച് ഫ്രൈസ്';
+      
+      const messageText = document.createElement('div');
+      messageText.className = 'message-text';
+      messageText.textContent = text;
+      
+      content.appendChild(sender);
+      content.appendChild(messageText);
+      message.appendChild(avatar);
+      message.appendChild(content);
+      bubble.appendChild(message);
+      
+      conversationArea.appendChild(bubble);
+      conversationArea.scrollTop = conversationArea.scrollHeight;
+      
+      // Speak the text
+      speakText(text, speaker);
+    }
+
+    function showTyping() {
+      typingIndicator.style.display = 'flex';
+      conversationArea.scrollTop = conversationArea.scrollHeight;
+    }
+
+    function hideTyping() {
+      typingIndicator.style.display = 'none';
+    }
+
+    function nextLine() {
+      if (currentLine >= conversation.length) {
+        currentLine = 0;
+      }
+      
+      const line = conversation[currentLine];
+      
+      if (line.speaker === 'fries') {
+        showTyping();
+        setTimeout(() => {
+          hideTyping();
+          addMessage(line.speaker, line.text);
+          currentLine++;
+        }, 1500);
+      } else {
+        addMessage(line.speaker, line.text);
+        currentLine++;
+      }
+    }
+
+    function toggleAutoPlay() {
+      if (isAutoPlaying) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+        isAutoPlaying = false;
+        autoBtn.textContent = 'Auto Play';
+        autoBtn.style.background = 'linear-gradient(135deg, var(--accent), var(--accent-2))';
+      } else {
+        autoPlayInterval = setInterval(() => {
+          if (currentLine >= conversation.length) {
+            toggleAutoPlay();
+            return;
+          }
+          nextLine();
+        }, 3000);
+        isAutoPlaying = true;
+        autoBtn.textContent = 'Stop Auto';
+        autoBtn.style.background = 'linear-gradient(135deg, #cd5c5c, #dc143c)';
+      }
+    }
+
+    function toggleAudio() {
+      isAudioEnabled = !isAudioEnabled;
+      if (isAudioEnabled) {
+        audioBtn.textContent = '🔊 Audio';
+        audioBtn.style.background = 'linear-gradient(135deg, var(--accent), var(--accent-2))';
+      } else {
+        audioBtn.textContent = '🔇 Audio';
+        audioBtn.style.background = 'linear-gradient(135deg, #cd5c5c, #dc143c)';
+      }
+    }
+
+    function resetConversation() {
+      conversationArea.innerHTML = '';
+      currentLine = 0;
+      hideTyping();
+      if (isAutoPlaying) {
+        toggleAutoPlay();
+      }
+    }
+
+    // Wait for voices to load for better voice selection
+    function loadVoices() {
+      return new Promise((resolve) => {
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          resolve(voices);
+        } else {
+          window.speechSynthesis.onvoiceschanged = () => {
+            resolve(window.speechSynthesis.getVoices());
+          };
+        }
+      });
+    }
+
+    // Event listeners
+    nextBtn.addEventListener('click', nextLine);
+    autoBtn.addEventListener('click', toggleAutoPlay);
+    resetBtn.addEventListener('click', resetConversation);
+    audioBtn.addEventListener('click', toggleAudio);
+
+    // Initialize with first message and load voices
+    loadVoices().then(() => {
+      console.log('Voices loaded successfully');
+    });
+    resetConversation();
+  </script>
+</body>
+</html>

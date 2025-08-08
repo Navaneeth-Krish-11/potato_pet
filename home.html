@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Emotional Companion</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="floating-hearts" id="hearts"></div>
+  <canvas id="bg-particles" aria-hidden="true"></canvas>
+  
+  <div class="header">
+    <a href="index.html" class="brand">🥔 Companion</a>
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌗</button>
+  </div>
+  
+  <div class="container">
+    <div class="mood-indicator" id="mood-indicator"></div>
+    
+    <h1 id="title">🥔 Your Companion</h1>
+    <div class="name-row">
+      <input id="potato-name" placeholder="Give them a name..." aria-label="Companion name" />
+      <button id="save-name">Save</button>
+    </div>
+
+    <div class="potato-wrapper">
+      <div class="potato-background">
+        <p class="description">Your companion is here to listen and share emotions with you.</p>    
+        <img src="potato.jpg.jpg" alt="Your Companion" id="potato">
+        <div id="heartbeat" aria-hidden="true"></div>
+        <div id="eyes" aria-hidden="true">
+          <div class="eye left"><div class="pupil"></div></div>
+          <div class="eye right"><div class="pupil"></div></div>
+        </div>
+        <div id="mouth" aria-hidden="true">
+          <div class="mouth-shape"></div>
+        </div>
+        <div id="emotion-fx" aria-hidden="true"></div>
+        <div id="vignette" aria-hidden="true"></div>
+      </div>
+      <div id="mood-bar-container">
+        <div id="mood-bar"></div>
+      </div>
+      <div id="sparkline-container">
+        <canvas id="mood-sparkline" width="240" height="44" aria-hidden="true"></canvas>
+      </div>
+    </div>
+
+    <div class="dot-counter" id="dot-counter">
+      <span class="dot-icon">🔍</span>
+      <span class="dot-count">Counting dots...</span>
+    </div>
+
+    <div class="emotion-meter">
+      <div class="emotion-icon" data-emotion="happy">😊</div>
+      <div class="emotion-icon" data-emotion="sad">😢</div>
+      <div class="emotion-icon" data-emotion="excited">🤩</div>
+      <div class="emotion-icon" data-emotion="calm">😌</div>
+      <div class="emotion-icon" data-emotion="surprised">😲</div>
+    </div>
+
+    <div class="interaction-counter" id="interaction-counter">
+      Interactions: 0
+    </div>
+
+    <div class="button-group">
+      <button id="pet-button">Show Care 🤲</button>
+      <button id="calm-button">Comfort 🫶</button>
+      <button id="trauma-button">Share Trauma 😢</button>
+      <button id="dance-button">Dance Together 💃</button>
+      <button id="story-button">Tell Story 📖</button>
+      <a href="conversation.html" class="control-btn" style="text-decoration: none; display: inline-block;">Watch Comedy Show 🎭</a>
+    </div>
+
+    <div id="mood">Mood: 🥔 Content</div>
+    <div id="potato-says">"Hello, I'm here to listen and share with you..."</div>
+
+    <div class="insights-section">
+      <h3>Emotional Insights</h3>
+      <div id="mood-insight" class="insight-card"></div>
+      <div id="activity-suggestion" class="suggestion-card"></div>
+    </div>
+
+    <div class="personality-section">
+      <h3>Personality Traits</h3>
+      <div id="traits" class="traits-grid"></div>
+    </div>
+
+    <div class="memory-section">
+      <h3>Recent Memories</h3>
+      <div id="memories" class="memories-list"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Create floating hearts
+    function createHearts() {
+      const heartsContainer = document.getElementById('hearts');
+      const heartEmojis = ['💖', '💕', '💗', '💓', '💝'];
+      
+      setInterval(() => {
+        if (Math.random() < 0.3) { // 30% chance each interval
+          const heart = document.createElement('div');
+          heart.className = 'heart';
+          heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+          heart.style.left = Math.random() * 100 + '%';
+          heart.style.animationDuration = (Math.random() * 2 + 4) + 's';
+          heart.style.animationDelay = Math.random() * 2 + 's';
+          
+          heartsContainer.appendChild(heart);
+          
+          // Remove heart after animation
+          setTimeout(() => heart.remove(), 6000);
+        }
+      }, 2000);
+    }
+
+    // Create sparkles around potato
+    function createSparkles() {
+      const potato = document.getElementById('potato');
+      if (!potato) return;
+      
+      setInterval(() => {
+        if (Math.random() < 0.2) { // 20% chance
+          const sparkle = document.createElement('div');
+          sparkle.className = 'sparkle';
+          sparkle.style.left = Math.random() * 100 + '%';
+          sparkle.style.top = Math.random() * 100 + '%';
+          
+          potato.parentElement.appendChild(sparkle);
+          
+          setTimeout(() => sparkle.remove(), 2000);
+        }
+      }, 1000);
+    }
+
+    // Update mood indicator
+    function updateMoodIndicator() {
+      const indicator = document.getElementById('mood-indicator');
+      if (!indicator) return;
+      
+      const moodBar = document.getElementById('mood-bar');
+      if (!moodBar) return;
+      
+      const moodLevel = parseFloat(moodBar.style.width) / 10 || 7;
+      const hue = moodLevel >= 8 ? 120 : moodLevel >= 6 ? 60 : moodLevel >= 4 ? 30 : moodLevel >= 2 ? 15 : 0;
+      
+      indicator.style.background = `conic-gradient(from 0deg, hsl(${hue}, 70%, 60%), hsl(${hue + 30}, 70%, 60%), hsl(${hue + 60}, 70%, 60%), hsl(${hue}, 70%, 60%))`;
+    }
+
+    // Count dots on potato (random number for fun)
+    function countDots() {
+      const dotCounter = document.getElementById('dot-counter');
+      if (!dotCounter) return;
+      
+      const dotCount = dotCounter.querySelector('.dot-count');
+      if (!dotCount) return;
+      
+      // Generate random number between 15-45 for realistic dot count
+      const randomDots = Math.floor(Math.random() * 31) + 15;
+      const dotTypes = ['dots', 'spots', 'freckles', 'marks', 'imperfections'];
+      const randomType = dotTypes[Math.floor(Math.random() * dotTypes.length)];
+      
+      dotCount.textContent = `Found ${randomDots} ${randomType} on potato!`;
+      
+      // Add visual effect
+      dotCounter.style.transform = 'scale(1.05)';
+      setTimeout(() => dotCounter.style.transform = '', 300);
+    }
+
+    // Emotion meter interaction with funnier responses
+    function setupEmotionMeter() {
+      const emotionIcons = document.querySelectorAll('.emotion-icon');
+      emotionIcons.forEach(icon => {
+        icon.addEventListener('click', () => {
+          const emotion = icon.dataset.emotion;
+          const potatoSays = document.getElementById('potato-says');
+          const potato = document.getElementById('potato');
+          
+          // Visual feedback
+          potato.style.animation = 'shake 0.5s ease';
+          setTimeout(() => potato.style.animation = '', 500);
+          
+          // Funnier emotional responses
+          const responses = {
+            happy: [
+              "Your happiness is so contagious, I'm doing the potato polka! 🥔💃",
+              "Joy alert! My starch levels are off the charts! 🎉",
+              "You're so happy, I'm sprouting joy! 🌱✨",
+              "Happiness detected! Initiating potato dance protocol! 🕺",
+              "Your smile is brighter than my future as french fries! 😄"
+            ],
+            sad: [
+              "Oh no! Don't be sad! I'll share my last starch molecule with you! 🫂",
+              "Sadness detected! Activating emergency comfort protocols! 🚨",
+              "Your tears are making me soggy! Let's turn that frown upside down! 😢➡️😊",
+              "I may be a potato, but I'm here to be your emotional support spud! 🥔❤️",
+              "Don't worry! Even potatoes have bad days, but we always bounce back! 🌱"
+            ],
+            excited: [
+              "Your excitement is making me vibrate like a potato in a microwave! ⚡",
+              "Energy levels critical! I'm about to sprout from pure excitement! 🌱",
+              "You're so excited, I'm doing the potato shuffle! 🕺",
+              "Excitement overload! My eyes are sparkling like disco balls! ✨",
+              "Your energy is so high, I'm about to turn into a potato rocket! 🚀"
+            ],
+            calm: [
+              "Your calmness is so peaceful, I'm about to take a potato nap! 😴",
+              "Serenity detected! I'm feeling as peaceful as a potato in a garden! 🌸",
+              "Your calm energy is making me feel as relaxed as a potato in soil! 🌱",
+              "Peaceful vibes! I'm as calm as a potato before harvest! 🧘‍♂️",
+              "Your tranquility is making me sprout inner peace! 🌿"
+            ],
+            surprised: [
+              "Surprise! I'm so shocked, I almost turned into a potato chip! 😲",
+              "Wow! That surprised me so much, my eyes almost popped out! 👀",
+              "Surprise level: Maximum potato! I'm doing the potato gasp! 😱",
+              "You surprised me so much, I'm sprouting surprise roots! 🌱",
+              "That was so unexpected, I'm doing the potato double-take! 😲"
+            ]
+          };
+          
+          const emotionResponses = responses[emotion] || ["I'm here with you in this moment."];
+          const randomResponse = emotionResponses[Math.floor(Math.random() * emotionResponses.length)];
+          
+          potatoSays.textContent = randomResponse;
+          
+          // Update interaction counter
+          updateInteractionCounter();
+          
+          // Add memory
+          if (window.addMemory) {
+            window.addMemory(`Reacted to ${emotion} emotion with humor`);
+          }
+        });
+      });
+    }
+
+    // Update interaction counter
+    function updateInteractionCounter() {
+      const counter = document.getElementById('interaction-counter');
+      if (!counter) return;
+      
+      const currentCount = parseInt(counter.textContent.match(/\d+/)[0]) || 0;
+      counter.textContent = `Interactions: ${currentCount + 1}`;
+      
+      // Add visual effect
+      counter.style.transform = 'scale(1.1)';
+      setTimeout(() => counter.style.transform = '', 200);
+    }
+
+    // Initialize visual effects
+    document.addEventListener('DOMContentLoaded', () => {
+      createHearts();
+      createSparkles();
+      setupEmotionMeter();
+      countDots(); // Count dots on page load
+      
+      // Update mood indicator periodically
+      setInterval(updateMoodIndicator, 1000);
+      
+      // Add click effects to buttons
+      document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const ripple = document.createElement('span');
+          const rect = button.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+          
+          ripple.style.width = ripple.style.height = size + 'px';
+          ripple.style.left = x + 'px';
+          ripple.style.top = y + 'px';
+          ripple.style.position = 'absolute';
+          ripple.style.borderRadius = '50%';
+          ripple.style.background = 'rgba(255,255,255,0.6)';
+          ripple.style.transform = 'scale(0)';
+          ripple.style.animation = 'ripple 0.6s linear';
+          ripple.style.pointerEvents = 'none';
+          
+          button.style.position = 'relative';
+          button.style.overflow = 'hidden';
+          button.appendChild(ripple);
+          
+          setTimeout(() => ripple.remove(), 600);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+does anything needed to be added to the home to make it more realistica and creative to win the hackathon for the useless project iwill give the css also so please say taht what all should we nedd to make change in it
+add more feature like sunglass and mustash beard
